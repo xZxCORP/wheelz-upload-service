@@ -5,7 +5,7 @@ export const openApiDocument = generateOpenApi(
   healthContract,
   {
     info: {
-      title: 'Wheelz X Service',
+      title: 'Wheelz Upload Service',
       version: '1.0.0',
     },
   },
