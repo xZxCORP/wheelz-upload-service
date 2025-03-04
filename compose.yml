@@ -1,0 +1,44 @@
+services:
+  x_db:
+    image: postgres:17.2
+    restart: always
+    ports:
+      - '5432'
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - wheelz-x-service-local-volume:/var/lib/postgresql/data
+    networks:
+      - x-services
+
+  x_api:
+    build:
+      context: .
+      target: development
+    develop:
+      watch:
+        - path: ./src
+          target: /app/src
+          action: sync+restart
+        - path: .env
+          target: /app/.env
+          action: sync+restart
+        - path: package.json
+          action: rebuild
+        - path: package-lock.json
+          action: rebuild
+    ports:
+      - '${PORT}:${PORT}'
+    networks:
+      - x-services
+      - wheelz-app
+
+volumes:
+  wheelz-x-service-local-volume:
+
+networks:
+  x-services:
+  wheelz-app:
+    external: true
