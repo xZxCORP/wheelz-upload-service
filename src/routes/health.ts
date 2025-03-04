@@ -9,7 +9,7 @@ export const healthRouter = server.router(healthContract, {
       body: {
         services: [
           {
-            name: 'x',
+            name: 'upload',
             status: 'healthy',
           },
         ],

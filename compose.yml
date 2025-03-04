@@ -1,5 +1,5 @@
 services:
-  x_db:
+  upload_db:
     image: postgres:17.2
     restart: always
     ports:
@@ -9,11 +9,11 @@ services:
       POSTGRES_USER: ${DB_USERNAME}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
-      - wheelz-x-service-local-volume:/var/lib/postgresql/data
+      - wheelz-upload-service-local-volume:/var/lib/postgresql/data
     networks:
-      - x-services
+      - upload-services
 
-  x_api:
+  upload_api:
     build:
       context: .
       target: development
@@ -32,13 +32,13 @@ services:
     ports:
       - '${PORT}:${PORT}'
     networks:
-      - x-services
+      - upload-services
       - wheelz-app
 
 volumes:
-  wheelz-x-service-local-volume:
+  wheelz-upload-service-local-volume:
 
 networks:
-  x-services:
+  upload-services:
   wheelz-app:
     external: true
