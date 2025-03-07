@@ -29,4 +29,4 @@ WORKDIR /app
 COPY package.json pnpm-lock.yaml ./
 RUN npm install -g pnpm && pnpm install
 COPY . .
-CMD ["sh", "-c", "./wait-for-it.sh upload_db:5432 -- pnpm run start:docker"]
+CMD ["sh", "-c", "./wait-for-it.sh upload_db:5432 minio:9000 -- pnpm run start:docker"]
