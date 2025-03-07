@@ -33,7 +33,11 @@ app.register(cors, {
 app.register(authPlugin, {
   authServiceUrl: config.AUTH_SERVICE_URL,
 });
-app.register(fastifyMultipart);
+app.register(fastifyMultipart, {
+  limits: {
+    fileSize: 20 * 1024 * 1024,
+  },
+});
 server.registerRouter(uploadContract.health, healthRouter, app, {
   requestValidationErrorHandler(error, request, reply) {
     return reply.status(400).send({ message: 'Validation failed', data: error.body?.issues });

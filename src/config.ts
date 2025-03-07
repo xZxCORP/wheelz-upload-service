@@ -14,6 +14,7 @@ const configSchema = z.object({
   MINIO_USERNAME: z.string().default('wheelz'),
   MINIO_PASSWORD: z.string().default('12345678'),
   MINIO_HOST: z.string().default('minio'),
+  MINIO_PUBLIC_HOST: z.string().default('http://localhost'),
   MINIO_PORT: z.coerce.number().default(9000),
   MINIO_BUCKET_NAME: z.string().default('wheelz-upload'),
 });

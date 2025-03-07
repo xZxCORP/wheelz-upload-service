@@ -1,15 +1,51 @@
 import { uploadContract } from '@zcorp/wheelz-contracts';
 
 import { config } from '../config.js';
+import { MinioClient } from '../infrastructure/minio/client.js';
 import { server } from '../server.js';
-import { MinioService } from '../services/minio.js';
-const minioService = new MinioService(config);
-await minioService.init();
+const minioClient = new MinioClient(config);
+await minioClient.init();
+
 export const uploadRouter = server.router(uploadContract.upload, {
   uploadFile: async (input) => {
     const file = await input.request.file();
+    if (!file) {
+      return {
+        status: 400,
+        body: {
+          message: 'No file uploaded',
+        },
+      };
+    }
+    const url = await minioClient.uploadFile(file);
+    if (!url) {
+      return {
+        status: 400,
+        body: {
+          message: 'File upload failed',
+        },
+      };
+    }
+    return {
+      status: 200,
+      body: {
+        url,
+      },
+    };
   },
   deleteFile: async (input) => {
+    const url = input.body.url;
+    const parsedUrl = new URL(url);
+    const fileName = parsedUrl.pathname.split('/').pop();
+    if (!fileName) {
+      return {
+        status: 400,
+        body: {
+          message: 'Invalid file name',
+        },
+      };
+    }
+    await minioClient.deleteFile(fileName);
     return {
       status: 200,
       body: {
