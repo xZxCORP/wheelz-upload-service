@@ -1,13 +1,15 @@
 import cors from '@fastify/cors';
+import fastifyMultipart from '@fastify/multipart';
 import fastifySwagger from '@fastify/swagger';
 import fastifySwaggerUI from '@fastify/swagger-ui';
 import { authPlugin } from '@zcorp/shared-fastify';
-import { healthContract } from '@zcorp/wheelz-contracts';
+import { uploadContract } from '@zcorp/wheelz-contracts';
 import Fastify from 'fastify';
 
 import { config } from './config.js';
 import { openApiDocument } from './open-api.js';
 import { healthRouter } from './routes/health.js';
+import { uploadRouter } from './routes/upload.js';
 import { server } from './server.js';
 export const app = Fastify({
   logger: {
@@ -31,7 +33,17 @@ app.register(cors, {
 app.register(authPlugin, {
   authServiceUrl: config.AUTH_SERVICE_URL,
 });
-server.registerRouter(healthContract, healthRouter, app, {
+app.register(fastifyMultipart, {
+  limits: {
+    fileSize: 20 * 1024 * 1024,
+  },
+});
+server.registerRouter(uploadContract.health, healthRouter, app, {
+  requestValidationErrorHandler(error, request, reply) {
+    return reply.status(400).send({ message: 'Validation failed', data: error.body?.issues });
+  },
+});
+server.registerRouter(uploadContract.upload, uploadRouter, app, {
   requestValidationErrorHandler(error, request, reply) {
     return reply.status(400).send({ message: 'Validation failed', data: error.body?.issues });
   },
