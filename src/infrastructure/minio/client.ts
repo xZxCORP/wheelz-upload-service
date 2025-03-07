@@ -47,7 +47,7 @@ export class MinioClient {
         fileBuffer,
         fileBuffer.length
       );
-      return `${this.config.MINIO_PUBLIC_HOST}:${this.config.MINIO_PORT}/${this.config.MINIO_BUCKET_NAME}/${fileName}`;
+      return `${this.config.MINIO_PUBLIC_HOST}/${this.config.MINIO_BUCKET_NAME}/${fileName}`;
     } catch {
       return null;
     }
