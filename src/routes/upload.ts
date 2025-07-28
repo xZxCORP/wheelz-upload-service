@@ -1,4 +1,4 @@
-import { requireAllRoles, requireAuth } from '@zcorp/shared-fastify';
+import { requireAuth } from '@zcorp/shared-fastify';
 import { uploadContract } from '@zcorp/wheelz-contracts';
 
 import { config } from '../config.js';
@@ -10,7 +10,7 @@ await minioClient.init();
 export const uploadRouter = server.router(uploadContract.upload, {
   uploadFile: {
     hooks: {
-      onRequest: [requireAuth(), requireAllRoles(['admin'])],
+      onRequest: [requireAuth()],
     },
     handler: async (input) => {
       const file = await input.request.file();
@@ -42,7 +42,7 @@ export const uploadRouter = server.router(uploadContract.upload, {
 
   deleteFile: {
     hooks: {
-      onRequest: [requireAuth(), requireAllRoles(['admin'])],
+      onRequest: [requireAuth()],
     },
     handler: async (input) => {
       const url = input.body.url;
