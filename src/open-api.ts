@@ -1,8 +1,8 @@
 import { generateOpenApi } from '@ts-rest/open-api';
-import { healthContract } from '@zcorp/wheelz-contracts';
+import { healthContract, uploadContract } from '@zcorp/wheelz-contracts';
 
 export const openApiDocument = generateOpenApi(
-  healthContract,
+  { ...uploadContract, ...healthContract },
   {
     info: {
       title: 'Wheelz Upload Service',
